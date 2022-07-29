@@ -4,7 +4,9 @@ import {
   createEmptyBoard,
   placeShipOnBoard,
   canBePlaced,
+  coordinateToIndex,
 } from '../../utils/boardTools';
+import * as BLOCK_STATE from '../../utils/blockState';
 
 const Board = ({
   setAvaliableShips,
@@ -57,7 +59,7 @@ const Board = ({
   };
 
   // 放船
-  const handlePlace = () => {
+  const handlePlace = (board) => {
     if (placingShip.length) {
       const {
         name,
@@ -65,7 +67,7 @@ const Board = ({
         direction,
         position: { row, col },
       } = placingShip;
-      if (canBePlaced(board, length, direction, row, col) === 'OK') {
+      if (board[coordinateToIndex(row, col)] != BLOCK_STATE.FORBIDDEN) {
         setPlacedShips((prev) => [...prev, placingShip]);
         setPlacingShip({});
         setAvaliableShips((prev) => prev.filter((item) => item.name != name));
@@ -83,7 +85,7 @@ const Board = ({
           data-index={index}
           onMouseOver={() => handleMouseOver(index)}
           onMouseDown={(e) => handleTurn(e)}
-          onClick={handlePlace}
+          onClick={() => handlePlace(board)}
         ></div>
       ))}
     </div>
